@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>搶修排班表</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">FIELD ROTATION PLANNER</p>
+        <h1>搶修排班表</h1>
+        <p class="subtitle">依照 8 月基準排程，自動展開今年、明年與後年的月曆。</p>
+      </div>
+      <div class="hero-badge">24 日樣本循環</div>
+    </header>
+
+    <section class="control-panel">
+      <div class="control-group names">
+        <label>人員姓名 <span>可直接修改</span></label>
+        <div id="nameInputs" class="name-inputs"></div>
+      </div>
+      <div class="control-group">
+        <label for="yearSelect">查看年份</label>
+        <select id="yearSelect"></select>
+      </div>
+      <div class="control-group">
+        <label for="monthSelect">查看月份</label>
+        <select id="monthSelect"></select>
+      </div>
+      <button id="todayBtn" class="secondary-btn">回到本月</button>
+    </section>
+
+    <section class="legend" id="legend"></section>
+
+    <section class="calendar-card">
+      <div class="calendar-heading">
+        <button class="icon-btn" id="prevMonth" aria-label="上一個月">‹</button>
+        <div><h2 id="calendarTitle"></h2><p id="monthSummary"></p></div>
+        <button class="icon-btn" id="nextMonth" aria-label="下一個月">›</button>
+      </div>
+      <div class="weekdays"> <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span> </div>
+      <div id="calendar" class="calendar-grid"></div>
+    </section>
+
+    <section class="explanation">
+      <div class="section-label">排程解析</div>
+      <h2>目前採用的計算方式</h2>
+      <p>以 8/1 的 A 為基準，將你提供的 8 月每日排程轉為循環樣本；樣本依序為 A、B×6、A、B、C×6、D×6、C、D、A×6、B×2，再跨月份與年份連續套用。這樣能保留你給出的每一天，且可繼續往前後推算。</p>
+      <p class="note">若實際規則不是循環樣本，而是固定的「幾天一輪」或跨月有特殊交接，只要修改下方排程模板即可。</p>
+    </section>
+
+    <footer>排班資料只儲存在此瀏覽器 · 可用瀏覽器列印另存 PDF</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
