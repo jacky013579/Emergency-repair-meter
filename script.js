@@ -1,7 +1,5 @@
 const STORAGE_KEY = 'repair-roster-names-v1';
 const baseNames = ['A', 'B', 'C', 'D'];
-// 由使用者提供的 8/1–8/31 排程，週期從 8/1 起算。
-const augustTemplate = ['A','B','B','B','B','B','B','A','B','C','C','C','C','C','C','D','D','D','D','D','D','C','D','A','A','A','A','A','A','B','B'];
 const today = new Date();
 const state = { year: today.getFullYear(), month: today.getMonth(), names: loadNames() };
 const $ = id => document.getElementById(id);
@@ -9,11 +7,19 @@ const $ = id => document.getElementById(id);
 function loadNames() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...baseNames]; } catch { return [...baseNames]; } }
 function saveNames() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.names)); }
 function assignment(date) {
-  // 以 8/1 為固定基準連續循環；用 UTC 避免夏令時間造成日期偏移。
-  const anchor = Date.UTC(state.year, 7, 1);
+  // 平日以 2026/8/3（一）為第一個平日週；用 UTC 避免時區造成日期偏移。
   const current = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-  const index = Math.floor((current - anchor) / 86400000);
-  return augustTemplate[((index % augustTemplate.length) + augustTemplate.length) % augustTemplate.length];
+  const day = date.getDay();
+  if (day >= 1 && day <= 5) {
+    const weekdayAnchor = Date.UTC(2026, 7, 3);
+    const weekIndex = Math.floor((current - weekdayAnchor) / 86400000 / 7);
+    return ['B', 'C', 'D', 'A'][((weekIndex % 4) + 4) % 4];
+  }
+  // 週末以 2026/8/1（六）為第一個週末；每兩週切換一次 A/C 或 B/D。
+  const weekendAnchor = Date.UTC(2026, 7, 1);
+  const weekendIndex = Math.floor((current - weekendAnchor) / 86400000 / 7);
+  const pairIndex = Math.floor(weekendIndex / 2);
+  return day === 6 ? ['A', 'C'][((pairIndex % 2) + 2) % 2] : ['B', 'D'][((pairIndex % 2) + 2) % 2];
 }
 function renderNames() {
   $('nameInputs').innerHTML = state.names.map((name, i) => `<input aria-label="人員 ${baseNames[i]} 姓名" data-index="${i}" value="${name.replace(/"/g, '&quot;')}">`).join('');
